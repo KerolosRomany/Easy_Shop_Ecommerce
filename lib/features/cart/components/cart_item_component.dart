@@ -1,6 +1,4 @@
 import 'package:ecommerce_eraasoft/constants/constants.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_cubit.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_state.dart';
 import 'package:ecommerce_eraasoft/features/cart/cubit/cart_cubit.dart';
 import 'package:ecommerce_eraasoft/features/cart/cubit/cart_cubit.dart';
 import 'package:ecommerce_eraasoft/features/cart/cubit/cart_cubit.dart';
@@ -12,16 +10,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/models.dart';
 import '../../../services/screen_size.dart';
 
-class CartBookComponent extends StatefulWidget {
+class CartItemComponent extends StatefulWidget {
   final CartItemModel model;
-  const CartBookComponent({super.key,
+  const CartItemComponent({super.key,
   required this.model});
 
   @override
-  State<CartBookComponent> createState() => _CartBookComponentState();
+  State<CartItemComponent> createState() => _CartItemComponentState();
 }
 
-class _CartBookComponentState extends State<CartBookComponent> {
+class _CartItemComponentState extends State<CartItemComponent> {
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +32,7 @@ class _CartBookComponentState extends State<CartBookComponent> {
         return Padding(
           padding: const EdgeInsets.all(10.0),
           child: MaterialButton(
+
             onPressed: (){
               cubit.getSpecificProduct(widget.model.id.toString(),context);
             },
@@ -87,8 +86,8 @@ class _CartBookComponentState extends State<CartBookComponent> {
                                       widget.model.quantity=widget.model.quantity+1;
                                       widget.model.total =  widget.model.quantity*  widget.model.price;
                                       widget.model.discountedPrice = widget.model.total - (widget.model.total * (widget.model.discountPercentage/100) );
-                                      cubit.totalInCart = cubit.totalInCart + (widget.model.price/*-widget.model.price*(widget.model.discountPercentage/100)*/);
-                                      cubit.getUpdatedTotal();
+                                      cubit.totalInCart = cubit.totalInCart + (widget.model.price-widget.model.price*(widget.model.discountPercentage/100));
+                                      cubit.getUpdatedTotal(cubit.totalInCart);
                                         // cubit.getCartProducts();
                                     });
                                 }, icon: Icon(Icons.add)),
@@ -99,9 +98,9 @@ class _CartBookComponentState extends State<CartBookComponent> {
                                     widget.model.quantity=widget.model.quantity-1;
                                     widget.model.total =  widget.model.quantity*  widget.model.price;
                                     widget.model.discountedPrice = widget.model.total - (widget.model.total * (widget.model.discountPercentage/100) );
-                                    cubit.totalInCart = cubit.totalInCart - (widget.model.price/*-widget.model.price*(widget.model.discountPercentage/100)*/);
+                                    cubit.totalInCart = cubit.totalInCart - (widget.model.price-widget.model.price*(widget.model.discountPercentage/100));
 
-                                    cubit.getUpdatedTotal();
+                                    cubit.getUpdatedTotal(cubit.totalInCart);
                                     // cubit.getCartProducts();
                                   });
                                 }, icon: Icon(Icons.remove)),
@@ -112,16 +111,20 @@ class _CartBookComponentState extends State<CartBookComponent> {
                       ),
                       Spacer(),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             IconButton(onPressed: (){
-                              cubit.removeProductFromCart(widget.model.id, widget.model.quantity,context);
+                              cubit.removeProductFromCart(cubit.cartId,widget.model.id, widget.model.quantity,context);
                               setState(() {
-                                // cubit.getCartProducts();
+                                cubit.totalInCart = cubit.totalInCart - ((widget.model.price*widget.model.quantity)-(widget.model.price*widget.model.quantity)*(widget.model.discountPercentage/100));
+                                print(cubit.totalInCart );
                                 widget.model.quantity = 0;
-                                cubit.getUpdatedTotal();
+                                // if (cubit.cartProducts.contains(widget.model)){
+                                //   cubit.cartProducts.remove(widget.model);
+                                // }
+                                cubit.getUpdatedTotal(cubit.totalInCart);
                               });
                             }, icon: Icon(Icons.delete,color: Colors.red.shade900,)),
                             Spacer(),
@@ -135,9 +138,18 @@ class _CartBookComponentState extends State<CartBookComponent> {
                                   color: Colors.grey,
                                 )),
                             SizedBox(height: ScreenSize.screenHeight*0.01),
+                            Text('Per one: ${widget.model.price.round()} \$', maxLines: 1,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey,
+                                )),
+                            SizedBox(height: ScreenSize.screenHeight*0.01),
                             Container(
-                              width: ScreenSize.screenWidth*0.2,
-                              child: Text('${widget.model.discountedPrice.round()} EGP', maxLines: 2,
+                              width: ScreenSize.screenWidth*0.25,
+                              child: Text('Price: ${widget.model.discountedPrice.round()} \$', maxLines: 2,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -152,7 +164,7 @@ class _CartBookComponentState extends State<CartBookComponent> {
                     ],
                   ),
                 )
-            ) : Container(),
+            ) : Padding(padding: EdgeInsets.zero)
           ),
         );
       },

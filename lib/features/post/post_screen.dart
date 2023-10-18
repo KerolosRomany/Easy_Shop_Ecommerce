@@ -11,14 +11,8 @@ import '../../models/models.dart';
 import 'add_post.dart';
 import 'comment_screen.dart';
 
-class FeedScreen extends StatefulWidget {
+class FeedScreen extends StatelessWidget {
   const FeedScreen({Key? key}) : super(key: key);
-
-  @override
-  _FeedScreenState createState() => _FeedScreenState();
-}
-
-class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +60,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) => buildFeedItem(cubit.postsList[index]),
+                      itemBuilder: (context, index) => buildFeedItem(cubit.postsList[index],cubit,context),
                       separatorBuilder: (context, index) => const Divider(
                         height: 1,
                         color: Colors.black54,
@@ -97,15 +91,18 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-
-  Widget buildFeedItem(PostModel model,) {
+  Widget buildFeedItem(PostModel model,PostCubit cubit,BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PostDetailsScreen(model: model),
-          ),
+        cubit.getPostComments(model.id).then((value) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostDetailsScreen(model: model),
+            ),
+          );
+
+        }
         );
       },
       child: Container(
@@ -145,7 +142,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      model.userId.toString(),
+                      model.id.toString(),
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -182,11 +179,15 @@ class _FeedScreenState extends State<FeedScreen> {
                 Spacer(),
                 OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PostDetailsScreen(model: model),
-                      ),
+                    cubit.getPostComments(model.id).then((value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PostDetailsScreen(model: model),
+                        ),
+                      );
+
+                    }
                     );
                   },
                   icon: const Icon(Icons.edit_note),
@@ -207,5 +208,4 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
     );
   }
-
 }

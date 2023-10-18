@@ -152,7 +152,24 @@ class RegisterScreen extends StatelessWidget {
                         onpressed: () {
                           if (cubit.registerFormKey.currentState!.validate()) {
                             print('Validated');
-                            cubit.registerUser(context);
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('Successful register'),
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      'Login',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginScreen())),
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
                           }
                         })
                   ],

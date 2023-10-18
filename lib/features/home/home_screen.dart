@@ -5,6 +5,7 @@ import 'package:ecommerce_eraasoft/features/about_us/about_us_screen.dart';
 import 'package:ecommerce_eraasoft/features/home/cubit/home_cubit.dart';
 import 'package:ecommerce_eraasoft/features/home/cubit/home_states.dart';
 import 'package:ecommerce_eraasoft/features/login/login_screen.dart';
+import 'package:ecommerce_eraasoft/features/profile/profile_screen.dart';
 import 'package:ecommerce_eraasoft/models/models.dart';
 import 'package:ecommerce_eraasoft/services/screen_size.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,18 +64,7 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ListTile(
-                            title: const Text('Order history',style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey
-                            ),),
-                            onTap: () {
 
-                            },
-                            leading: Icon(Icons.history),
-                          ),
-                          Divider(height: 1,color: Colors.grey,),
                           ListTile(
                             title: const Text('Edit profile',style: TextStyle(
                                 fontSize: 17,
@@ -82,21 +72,9 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.grey
                             ),),
                             onTap: () {
-
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileScreen()));
                             },
                             leading: Icon(Icons.edit),
-                          ),
-                          Divider(height: 1,color: Colors.grey,),
-                          ListTile(
-                            title: const Text('Change password',style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey
-                            ),),
-                            onTap: () {
-
-                            },
-                            leading: Icon(Icons.password_outlined),
                           ),
                           Divider(height: 1,color: Colors.grey,),
                           ListTile(
@@ -119,6 +97,8 @@ class HomeScreen extends StatelessWidget {
                             ),),
                             onTap: () {
                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+                              userId='';
+                              authToken = '';
                             },
                             leading: Icon(Icons.logout_outlined,color: Colors.red),
                           ),

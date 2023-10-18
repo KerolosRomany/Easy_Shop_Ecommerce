@@ -2,23 +2,22 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:ecommerce_eraasoft/features/products/specific_book_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/constants.dart';
 import '../../../models/models.dart';
-import '../../books/specific_book_screen.dart';
 import 'cart_states.dart';
 class CartCubit extends Cubit<CartStates> {
-
   CartCubit() : super(InitialCartState());
   static CartCubit get(context) => BlocProvider.of(context);
   List<CartItemModel> cartProducts=[];
   double totalInCart=0;
-  Future<void> getCartProducts() async {
+  Future<void> getCartProducts(List<CartItemModel> productsAddedToCart) async {
     try {
-      final url = Uri.parse('$baseUrl/carts/$userId');
+      final url = Uri.parse('$baseUrl/carts/user/$userId');
       final response = await http.get(url,
           headers:
           {
@@ -30,21 +29,34 @@ class CartCubit extends Cubit<CartStates> {
       if (response.statusCode == 200) {
         final decodedBody = json.decode(response.body);
         print(decodedBody);
-        final List<dynamic> data = decodedBody['products'];
-        final double discountedTotal = decodedBody['discountedTotal'].toDouble();
+        final List<dynamic> data = decodedBody['carts'][0]['products'];
+        double discountedTotal = decodedBody['carts'][0]['discountedTotal'].toDouble();
+        discountedTotal = discountedTotal - discountedTotal;   // discountedTotal in the api is getting 3414 and When I change that and get discountedTotal again get 3414 because I can't access the api to post or put
+        cartId = decodedBody['carts'][0]['id'];
         print(data);
         final products = data
             .map<CartItemModel>((json) => CartItemModel.fromJson(json))
             .toList();
-        cartProducts=products;
-        totalInCart=discountedTotal;
+
+        // cartProducts=products;    // by using api
+        cartProducts=productsAddedToCart;
+        // cartProducts.insertAll(0,productsAddedToCart);   // insert added products into cart products
+        print(cartProducts);
+        double productsAddedToCartDiscountedTotal=0;
+        for (var product in productsAddedToCart){
+          productsAddedToCartDiscountedTotal = productsAddedToCartDiscountedTotal +product.discountedPrice;
+        }
+        totalInCart=discountedTotal+ productsAddedToCartDiscountedTotal;
         emit(CartSuccessfulGetCartBooksState());
       } else {
-        throw 'Failed to load cart books. Status code: ${response.statusCode}';
+        throw 'Failed to load cart products. Status code: ${response.statusCode}';
       }
     } catch (e) {
-      throw 'Failed to load cart books: $e';
+      throw 'Failed to load cart products: $e';
     }
+  }
+  List<CartItemModel> getCartProductsState(){
+    return cartProducts;
   }
   Future<void> addToCart(int productId,int quantity,BuildContext context) async {
     quantity=quantity+1;
@@ -148,6 +160,7 @@ class CartCubit extends Cubit<CartStates> {
       print('Error: $error');
     }
   }
+  int cartId = 0;
   Future<void> removeItemFromCart(int productId,int quantity,BuildContext context) async {
     quantity=quantity-1;
     final url = Uri.parse('$baseUrl/carts/$userId');
@@ -248,16 +261,17 @@ class CartCubit extends Cubit<CartStates> {
       print('Error: $error');
     }
   }
-  Future<void> removeProductFromCart(int productId,int quantity,BuildContext context) async {
+  Future<void> removeProductFromCart(int cartId,int productId,int quantity,BuildContext context) async {
     quantity=0;
-    final url = Uri.parse('$baseUrl/carts/$userId');
+    final url = Uri.parse('$baseUrl/carts/$cartId');
     final Map<String, dynamic> data ={
-      'products': [
-        {
-          'id': productId,
-          'quantity': quantity,
-        }
-      ]
+          'products': [
+            {
+              'id': productId,
+              'quantity': quantity,
+            }
+          ]
+
     };
     try {
       final response = await http.put(url, body: jsonEncode(data),
@@ -348,7 +362,8 @@ class CartCubit extends Cubit<CartStates> {
       print('Error: $error');
     }
   }
-  void getUpdatedTotal(){
+  void getUpdatedTotal(double total){
+    totalInCart = total;
     emit(CartGetUpdatedTotalState());
   }
   ProductModel specificBook = ProductModel(
@@ -380,7 +395,7 @@ class CartCubit extends Cubit<CartStates> {
         // final Map<String,dynamic> data = decodedBody['data'];
         final ProductModel product = ProductModel.fromJson(decodedBody);
         specificBook=product;
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> SpecificBookScreen(product: product)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> SpecificProductScreen(product: product)));
         emit(CartSuccessfulGetSpecificProductState());
       } else {
         throw 'Failed to load specific book. Status code: ${response.statusCode}';

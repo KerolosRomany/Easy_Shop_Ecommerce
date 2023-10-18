@@ -1,5 +1,5 @@
-import 'package:ecommerce_eraasoft/features/books/cubit/books_cubit.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_state.dart';
+import 'package:ecommerce_eraasoft/features/products/cubit/products_cubit.dart';
+import 'package:ecommerce_eraasoft/features/products/cubit/products_state.dart';
 import 'package:ecommerce_eraasoft/services/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,6 +48,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     onTap: (){
                       cubit.openSearch =true;
                     },
+
                     backgroundColor:  MaterialStateProperty.resolveWith<Color?>(
                           (Set<MaterialState> states) {
                         return Colors.grey.shade200;
@@ -71,7 +72,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
                       }, icon: Icon(Icons.clear) )
                     ],
-
                   ),
                 ),
               cubit.openSearch == true ?
@@ -82,7 +82,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemBuilder: (context,
-                          index) => BookComponent(model: cubit.booksSearched[index] ,),
+                          index) => ProductComponent(model: cubit.booksSearched[index] ,),
                       separatorBuilder:
                           (context, index) =>
                           SizedBox(
@@ -99,7 +99,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemBuilder: (context,
-                        index) => BookComponent(model: cubit.productsList[index] ,),
+                        index) => ProductComponent(model: cubit.productsList[index] ,),
                     separatorBuilder:
                         (context, index) =>
                         SizedBox(

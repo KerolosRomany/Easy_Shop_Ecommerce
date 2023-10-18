@@ -8,31 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import '../../models/models.dart';
 
-class PostDetailsScreen extends StatefulWidget {
+class PostDetailsScreen extends StatelessWidget {
   final PostModel model;
-
-
   const PostDetailsScreen({Key? key, required this.model}) : super(key: key);
-
-  @override
-  _PostDetailsScreenState createState() => _PostDetailsScreenState();
-}
-
-class _PostDetailsScreenState extends State<PostDetailsScreen> {
-
-
-  @override
-  void initState() {
-    PostCubit.get(context).getPostComments(widget.model.id);
-    super.initState();
-  }
-
-  void addCommentFromButton(int postId) {
-    final comment = PostCubit.get(context).commentController.text;
-    PostCubit.get(context).addComment(postId,comment,context);
-    // PostCubit.get(context).getPostComments(widget.model.id);
-    PostCubit.get(context).commentController.clear();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +36,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         backgroundColor: Colors.grey[300],
                         radius: 20,
                         child: Text(
-                          widget.model.title.substring(0, 1),
+                          model.title.substring(0, 1),
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 17,
@@ -76,7 +54,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                               children: [
                                 Container(
                                   child: Text(
-                                    widget.model.title,
+                                    model.title,
                                     overflow: TextOverflow.clip,
                                     style: const TextStyle(
                                       fontSize: 20,
@@ -86,7 +64,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                                   width: ScreenSize.screenWidth*0.6,
                                 ),
                                 Text(
-                                  widget.model.userId.toString(),
+                                  model.userId.toString(),
                                   style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 16,
@@ -102,7 +80,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.model.body,
+                    model.body,
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
@@ -125,6 +103,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     itemCount: cubit.commentsList.length,
                     itemBuilder: (context, index) {
                       final comment = cubit.commentsList[index];
+                      print('Comments: $comment');
                       return ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey[300],
@@ -173,16 +152,13 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                       suffixIcon: IconButton(
                         icon: Icon(Icons.send,color: defaultColor),
                         onPressed: (){
-                          setState(() {
-                            addCommentFromButton(widget.model.id,);
-                          });
-
+                            cubit.addCommentFromButton(model.id,context);
                         },
                       ),
                     ),
                     controller: cubit.commentController,
                     onSubmitted: (value){
-                      cubit.addComment(widget.model.id,value,context);
+                      cubit.addComment(model.id,value,context);
                     },
                   ),
                   const SizedBox(height: 20),

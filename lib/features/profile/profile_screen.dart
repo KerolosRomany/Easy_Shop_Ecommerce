@@ -6,6 +6,8 @@ import 'package:ecommerce_eraasoft/services/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../login/login_screen.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -38,7 +40,11 @@ class ProfileScreen extends StatelessWidget {
                                color: Colors.white,
                              ),),
                            ),
-                           IconButton(onPressed: (){}, icon: Icon(Icons.logout_outlined, color: Colors.white,))
+                           IconButton(onPressed: (){
+                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+                             userId='';
+                             authToken = '';
+                           }, icon: Icon(Icons.logout_outlined, color: Colors.white,))
                          ],
                        ),
                      ),

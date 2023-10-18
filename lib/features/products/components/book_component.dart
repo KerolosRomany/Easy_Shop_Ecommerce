@@ -1,6 +1,6 @@
 import 'package:ecommerce_eraasoft/constants/constants.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_cubit.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_state.dart';
+import 'package:ecommerce_eraasoft/features/products/cubit/products_cubit.dart';
+import 'package:ecommerce_eraasoft/features/products/cubit/products_state.dart';
 import 'package:ecommerce_eraasoft/features/home/cubit/home_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +9,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/models.dart';
 import '../../../services/screen_size.dart';
 
-class BookComponent extends StatefulWidget {
+class ProductComponent extends StatefulWidget {
   final ProductModel model;
-  const BookComponent({super.key,
+  const ProductComponent({super.key,
   required this.model});
 
   @override
-  State<BookComponent> createState() => _BookComponentState();
+  State<ProductComponent> createState() => _ProductComponentState();
 }
 
-class _BookComponentState extends State<BookComponent> {
+class _ProductComponentState extends State<ProductComponent> {
   @override
   void initState() {
     super.initState();
@@ -70,7 +70,7 @@ class _BookComponentState extends State<BookComponent> {
                               borderRadius: BorderRadius.circular(10),
                               color: defaultColor
                           ),
-                          child: Center(child: Text('${widget.model.discountPercentage.toString()}%',style: TextStyle(
+                          child: Center(child: Text('${widget.model.discountPercentage.round()}%',style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
                               fontSize: 13
@@ -102,11 +102,11 @@ class _BookComponentState extends State<BookComponent> {
                                 color: Colors.grey
                             )),
                         SizedBox(height: ScreenSize.screenHeight*0.01),
-                        Text(widget.model.price.toString(), maxLines: 1,
+                        Text('${(widget.model.price - widget.model.price * (widget.model.discountPercentage/100)).round() } \$', maxLines: 1,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.green
                             )),
@@ -114,7 +114,7 @@ class _BookComponentState extends State<BookComponent> {
                     ),
                     Spacer(),
                     IconButton(onPressed: (){
-                      cubit.addToCart(widget.model.id, context);
+                      cubit.addToCart(cubit.cartId,widget.model.id, context);
                     }, icon: Icon(Icons.add_shopping_cart)),
                   ],
                 ),

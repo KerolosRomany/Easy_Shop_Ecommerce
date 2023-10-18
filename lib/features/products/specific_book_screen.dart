@@ -1,16 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce_eraasoft/components/components.dart';
-import 'package:ecommerce_eraasoft/features/books/cubit/books_cubit.dart';
 import 'package:ecommerce_eraasoft/models/models.dart';
 import 'package:ecommerce_eraasoft/services/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubit/books_state.dart';
+import 'cubit/products_cubit.dart';
+import 'cubit/products_state.dart';
 
-class SpecificBookScreen extends StatelessWidget {
+
+class SpecificProductScreen extends StatelessWidget {
   final ProductModel product;
-  const SpecificBookScreen({super.key,required this.product});
+  const SpecificProductScreen({super.key,required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -81,30 +82,45 @@ class SpecificBookScreen extends StatelessWidget {
                                 width: ScreenSize.screenWidth*0.6,
                               ),
                               Spacer(),
-                              Text('${product.price.toString()} EGP', maxLines: 1,
+                              Text('${(product.price - product.price * (product.discountPercentage/100)).round() } \$', maxLines: 1,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 17,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.green
                                   )),
                             ],
                           ),
                           SizedBox(height: ScreenSize.screenHeight*0.01,),
-                          Text(product.category,maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
+                          Text('Category: ${product.category}',maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
                           color: Colors.grey
                   ),),
                           SizedBox(height: ScreenSize.screenHeight*0.01,),
-                          Text(product.brand,maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
+                          Text('Brand: ${product.brand}',maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey
                           ),),
                           SizedBox(height: ScreenSize.screenHeight*0.01,),
                           Text('Rating: ${product.rating.toString()}',maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey
+                          ),),
+                          SizedBox(height: ScreenSize.screenHeight*0.01,),
+                          Text('Sale: ${product.discountPercentage.round()} %', maxLines: 1,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey
+                              )),
+                          SizedBox(height: ScreenSize.screenHeight*0.01,),
+                          Text('Price before sale: ${product.price.round()} \$',maxLines: 2,overflow: TextOverflow.ellipsis,style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey
@@ -124,7 +140,7 @@ class SpecificBookScreen extends StatelessWidget {
                           ),),
                           SizedBox(height: ScreenSize.screenHeight*0.02,),
                           defaultButton(text: 'Add to cart', onpressed: (){
-                            cubit.addToCart(product.id,context);
+                            cubit.addToCart(cubit.cartId,product.id,context);
 
                           })
 

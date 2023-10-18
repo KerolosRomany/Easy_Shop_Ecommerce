@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import  'package:bloc/bloc.dart';
-import 'package:ecommerce_eraasoft/features/books/specific_book_screen.dart';
 import 'package:ecommerce_eraasoft/features/cart/cart_screen.dart';
 import 'package:ecommerce_eraasoft/features/post/cubit/post_states.dart';
+import 'package:ecommerce_eraasoft/features/post/post_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +22,7 @@ class PostCubit extends Cubit<PostStates> {
   TextEditingController postController = TextEditingController();
   TextEditingController tagsController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  var addPostKey = GlobalKey<FormState>();
   Future<void> getPosts() async {
     try {
       final url = Uri.parse('$baseUrl/posts');
@@ -185,6 +186,123 @@ class PostCubit extends Cubit<PostStates> {
 
   List<CommentModel> commentsList = [];
   final TextEditingController commentController = TextEditingController();
+
+  Future<void> addPost(BuildContext context) async {
+    final url = Uri.parse('$baseUrl/posts/add');
+    final Map<String, dynamic> data ={
+      'title': titleController.text,
+      'body': postController.text,
+      'userId': int.parse(userId),
+      "tags": [
+        tagsController.text
+
+      ],
+      "reactions": 0
+    };
+    try {
+      final response = await http.post(url, body: jsonEncode(data),
+          headers:
+          {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          }
+      );
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print('Success posted');
+        final jsonResponse = json.decode(response.body);
+        print(jsonResponse);
+        // final data = jsonResponse;
+        // print(data);
+        final post = PostModel.fromJson(jsonResponse);
+
+        print(post);
+        // postsList.add(post);
+        postsList.insert(0, post);
+        userPostsList.insert(0, post);
+        print(jsonResponse);
+        // final double discountedTotal = jsonResponse['discountedTotal'].toDouble();
+        // totalInCart = discountedTotal;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Successful'),
+            content: Text('Success posted'),
+            actions: [
+              TextButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> FeedScreen())),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
+                ),
+              ),
+            ],
+          ),
+        );
+        emit(PostSuccessfulAddPostState());
+      }
+      else if (response.statusCode == 403 || response.statusCode == 401) {
+        final jsonResponse = json.decode(response.body);
+        print(response.body);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Error in adding post'),
+            actions: [
+              TextButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.pop(context),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
+                ),
+              ),
+            ],
+          ),
+        );
+        print(response.statusCode);
+      }
+      else if (response.statusCode == 422){
+        final jsonResponse = json.decode(response.body);
+        print(response.body);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Error in adding post'),
+            actions: [
+              TextButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.pop(context),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      else {
+
+        print(response.statusCode);
+      }
+    } catch (error) {
+      // Error occurred during the HTTP request
+      print('Error: $error');
+    }
+  }
+
+  Map<int,CommentModel> insertedComments = {
+
+  };
   Future<void> getPostComments(int postId) async {
     try {
       final url = Uri.parse('$baseUrl/posts/$postId/comments');
@@ -204,6 +322,9 @@ class PostCubit extends Cubit<PostStates> {
             .map<CommentModel>((json) => CommentModel.fromJson(json))
             .toList();
         commentsList=comments;
+        if (insertedComments.containsKey(postId)){
+          commentsList.insert(0,insertedComments[postId]!);
+        }
         print(commentsList);
         emit(PostSuccessfulGetUserPostCommentsState());
       } else {
@@ -213,7 +334,6 @@ class PostCubit extends Cubit<PostStates> {
       throw 'Failed to load comments: $e';
     }
   }
-
   Future<void> addComment(int postId,String body,BuildContext context) async {
     final url = Uri.parse('$baseUrl/comments/add');
     final Map<String, dynamic> data ={
@@ -237,6 +357,9 @@ class PostCubit extends Cubit<PostStates> {
         // print(data);
         final comment = CommentModel.fromJson(jsonResponse);
         print(comment);
+        insertedComments.addAll({
+          comment.postId: comment
+        });
         commentsList.add(comment);
         print(jsonResponse);
         // final double discountedTotal = jsonResponse['discountedTotal'].toDouble();
@@ -318,116 +441,10 @@ class PostCubit extends Cubit<PostStates> {
       print('Error: $error');
     }
   }
-  Future<void> addPost(BuildContext context) async {
-    final url = Uri.parse('$baseUrl/posts/add');
-    final Map<String, dynamic> data ={
-      'title': titleController.text,
-      'body': postController.text,
-      'userId': userId,
-      "tags": [
-        "history",
-        "american",
-        "crime"
-      ],
-      "reactions": 0
-    };
-    try {
-      final response = await http.post(url, body: jsonEncode(data),
-          headers:
-          {
-            'Authorization': 'Bearer $authToken',
-            'Content-Type': 'application/json',
-          }
-      );
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        print('Success posted');
-        final jsonResponse = json.decode(response.body);
-        print(jsonResponse);
-        // final data = jsonResponse;
-        // print(data);
-        final post = PostModel.fromJson(jsonResponse);
-        print(post);
-        postsList.add(post);
-        print(jsonResponse);
-        // final double discountedTotal = jsonResponse['discountedTotal'].toDouble();
-        // totalInCart = discountedTotal;
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Successful'),
-            content: Text('Success posted'),
-            actions: [
-              TextButton(
-                child: Text(
-                  'OK',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () => Navigator.pop(context),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
-                ),
-              ),
-            ],
-          ),
-        );
-        emit(PostSuccessfulAddPostState());
-      }
-      else if (response.statusCode == 403 || response.statusCode == 401) {
-        final jsonResponse = json.decode(response.body);
-        print(response.body);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Error in adding post'),
-            actions: [
-              TextButton(
-                child: Text(
-                  'OK',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () => Navigator.pop(context),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
-                ),
-              ),
-            ],
-          ),
-        );
-        print(response.statusCode);
-      }
-      else if (response.statusCode == 422){
-        final jsonResponse = json.decode(response.body);
-        print(response.body);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Error in adding post'),
-            actions: [
-              TextButton(
-                child: Text(
-                  'OK',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () => Navigator.pop(context),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-      else {
-
-        print(response.statusCode);
-      }
-    } catch (error) {
-      // Error occurred during the HTTP request
-      print('Error: $error');
-    }
+  void addCommentFromButton(int postId,BuildContext context) {
+    final comment = commentController.text;
+    addComment(postId,comment,context);
+    // PostCubit.get(context).getPostComments(widget.model.id);
+    commentController.clear();
   }
-
-
 }

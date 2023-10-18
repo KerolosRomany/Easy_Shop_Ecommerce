@@ -1,4 +1,5 @@
 
+import 'package:ecommerce_eraasoft/features/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:onboarding/onboarding.dart';
 
@@ -30,13 +31,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         borderRadius: defaultProceedButtonBorderRadius,
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context){
-            return const RegisterScreen();
+            return const LoginScreen();
           }));
         },
         child: const Padding(
           padding: defaultProceedButtonPadding,
           child: Text(
-            'Register',
+            'Login',
             style:TextStyle(
                 color: Colors.white,
                 letterSpacing: 1.0,
@@ -90,7 +91,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Welcome to Ketaby!',
+                        'Welcome to Easy shop!',
                         style: TextStyle(
                           color: Color(0xff174068),
                           fontWeight: FontWeight.bold,
@@ -106,8 +107,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Explore a world of books at your fingertips. '
-                            '\n\nDiscover the latest releases, bestsellers, and hidden gems in every genre.',
+                        'Shop for everything you need, in one place. '
+                            '\n\nFind the latest products from top brands.'
+                            '\n\nEnjoy a convenient and hassle-free shopping experience with our easy-to-use app.',
                         style: TextStyle(
                           color: Color(0xff030E19),
                           fontWeight: FontWeight.w500,
@@ -129,14 +131,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height*0.4,
-                    child: const Image(image: AssetImage('assets/images/4.jpg',)),
+                    child: const Image(image: AssetImage('assets/images/2.jpg',)),
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 35.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Find Your Next Read',
+                        'Sale on Everything!',
                         style: TextStyle(
                           color: Color(0xff174068),
                           fontWeight: FontWeight.bold,
@@ -152,8 +154,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Browse through our vast collection of books, curated with love for all book enthusiasts. '
-                            '\n\nPurchase your favorite titles with just a few taps.',
+                        'Find the latest trends at the best prices. '
+                            '\n\nDon\'t miss out on these incredible savings.'
+                            '\n\nGet ready for the season with our latest sale',
                         style: TextStyle(
                           color: Color(0xff030E19),
                           fontWeight: FontWeight.w500,
@@ -175,14 +178,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height*0.4,
-                    child: const Image(image: AssetImage('assets/images/5.jpg',)),
+                    child: const Image(image: AssetImage('assets/images/3.jpg',)),
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 35.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Immerse Yourself in Books',
+                        'Review Your Order',
                         style: TextStyle(
                           color: Color(0xff174068),
                           fontWeight: FontWeight.bold,
@@ -198,8 +201,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Dive into captivating stories, expand your knowledge, and embark on incredible journeys through the power of reading. '
-                            '\n\nEnjoy a seamless reading experience on any device.',
+                        'See what\'s in your cart and make any changes before you checkout. '
+                            '\n\nConfirm your order details and shipping information.'
+                            '\n\nThank you for shopping with us! We\'re excited to get your order on its way.',
                         style: TextStyle(
                           color: Color(0xff030E19),
                           fontWeight: FontWeight.w500,

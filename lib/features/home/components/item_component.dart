@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/models.dart';
 import '../../../services/screen_size.dart';
-import '../../books/specific_book_screen.dart';
 
 class ItemComponent extends StatelessWidget {
   final ProductModel model;
@@ -59,7 +58,7 @@ class ItemComponent extends StatelessWidget {
                             color: Colors.grey
                         )),
 
-                    Text(model.price.toString(), maxLines: 1,
+                    Text('${(model.price - model.price * (model.discountPercentage/100)).round() } \$', maxLines: 1,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

@@ -101,7 +101,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      model.userId.toString(),
+                      model.id.toString(),
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,

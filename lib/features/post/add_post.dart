@@ -29,90 +29,86 @@ class _AddPostScreenState extends State<AddPostScreen> {
         return Scaffold(
 
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (cubit.isAddingPost) ...[
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: TextField(
-                        controller: cubit.titleController,
-                        decoration: const InputDecoration(
-                          labelText: 'Add a title',
-                          border: OutlineInputBorder(),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: cubit.addPostKey,
+                  child: Column(
+                    children: [
+                      if (cubit.isAddingPost) ...[
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: TextField(
+                            controller: cubit.titleController,
+                            decoration: const InputDecoration(
+                              labelText: 'Add a title',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: TextField(
-                        controller: cubit.postController,
-                        decoration: const InputDecoration(
-                          labelText: 'Add a post',
-                          border: OutlineInputBorder(),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: TextField(
+                            controller: cubit.postController,
+                            decoration: const InputDecoration(
+                              labelText: 'Add a post',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: TextField(
-                        controller: cubit.tagsController,
-                        decoration: const InputDecoration(
-                          labelText: 'Add a tags',
-                          border: OutlineInputBorder(),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: TextField(
+                            controller: cubit.tagsController,
+                            decoration: const InputDecoration(
+                              labelText: 'Add a tags',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            String postText = cubit.postController.text.trim();
-                            if (postText.isNotEmpty) {
-                              // cubit.addPost(postText);
-                              setState(() {
-                                cubit.addPost(context);
-                              });
-                              cubit.titleController.clear();
-                              cubit.postController.clear();
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                String postText = cubit.postController.text.trim();
+                                if (postText.isNotEmpty) {
+                                  // cubit.addPost(postText);
+                                  setState(() {
+                                    cubit.addPost(context);
+                                  });
+                                  cubit.titleController.clear();
+                                  cubit.postController.clear();
+                                  cubit.tagsController.clear();
 
-                            }
-                          },
-                          child: const Text('Add Post'),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
-                          ),
-                        ),
-                        SizedBox(width: ScreenSize.screenWidth*0.1),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=> MyPostsScreen()));
-                          },
-                          child: const Text('My posts'),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
-                          ),
+                                }
+                              },
+                              child: const Text('Add Post'),
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(defaultColor),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                  Container(
-                    child: ListView.separated(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) => buildFeedItem(cubit.userPostsList[index]),
-                      separatorBuilder: (context, index) => const Divider(
-                        height: 1,
-                        color: Colors.black54,
-                      ),
-                      itemCount: cubit.userPostsList.length,
-                    ),
+                      // Container(
+                      //   child: ListView.separated(
+                      //     scrollDirection: Axis.vertical,
+                      //     shrinkWrap: true,
+                      //     physics: NeverScrollableScrollPhysics(),
+                      //     itemBuilder: (context, index) => buildFeedItem(cubit.userPostsList[index]),
+                      //     separatorBuilder: (context, index) => const Divider(
+                      //       height: 1,
+                      //       color: Colors.black54,
+                      //     ),
+                      //     itemCount: cubit.userPostsList.length,
+                      //   ),
+                      // ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

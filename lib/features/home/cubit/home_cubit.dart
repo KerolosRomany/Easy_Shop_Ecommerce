@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:ecommerce_eraasoft/features/books/books_screen.dart';
 import 'package:ecommerce_eraasoft/features/cart/cart_screen.dart';
 import 'package:ecommerce_eraasoft/features/home/home_screen.dart';
 import 'package:ecommerce_eraasoft/features/post/post_screen.dart';
+import 'package:ecommerce_eraasoft/features/products/specific_book_screen.dart';
 import 'package:ecommerce_eraasoft/features/profile/profile_screen.dart';
 import 'package:ecommerce_eraasoft/features/register/cubit/register_states.dart';
 import 'package:ecommerce_eraasoft/features/register/otp_screen.dart';
@@ -15,7 +15,7 @@ import '../../../constants/constants.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../models/models.dart';
-import '../../books/specific_book_screen.dart';
+import '../../products/products_screen.dart';
 import '../category_products.dart';
 import 'home_states.dart';
 
@@ -73,6 +73,7 @@ class HomeCubit extends Cubit<HomeStates> {
         final decodedBody = json.decode(response.body);
         final dynamic data = decodedBody; // Accessing data as a single object
         print('profile');
+        print('$userId is userId');
         print(data);
         Person profile = Person.fromJson(data); // Create a single instance
         print('profile');
@@ -199,7 +200,7 @@ class HomeCubit extends Cubit<HomeStates> {
         // final Map<String,dynamic> data = decodedBody['data'];
         final ProductModel product = ProductModel.fromJson(decodedBody);
         specificBook=product;
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> SpecificBookScreen(product: product)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> SpecificProductScreen(product: product)));
         emit(HomeSuccessfulGetSpecificBookState());
       } else {
         throw 'Failed to load specific book. Status code: ${response.statusCode}';
@@ -266,7 +267,7 @@ class HomeCubit extends Cubit<HomeStates> {
     HomeScreen(),
     ProductsScreen(),
     FeedScreen(),
-    CartScreen(),
+    CartScreen( productsAddedToCart: []),
     ProfileScreen(),
   ];
 

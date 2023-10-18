@@ -43,6 +43,7 @@ class LoginCubit extends Cubit<LoginStates> {
         print('${response.body} ');
         final jsonResponse = json.decode(response.body);
         authToken = jsonResponse['token'];
+        userId = jsonResponse['id'].toString();
         print('Token: $authToken');
         Navigator.pushReplacement(
           context,

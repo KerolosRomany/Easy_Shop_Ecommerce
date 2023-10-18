@@ -356,6 +356,18 @@ class CartItemModel {
       discountedPrice: json['discountedPrice'].toDouble(),
     );
   }
+  @override
+  String toString() {
+    return 'CartItemModel {'
+        'id: $id, '
+        'title: $title, '
+        'quantity: $quantity, '
+        'price: $price, '
+        'discountedPrice: $discountedPrice, '
+        'discountPercentage: $discountPercentage, '
+        'total: $total, '
+        '}';
+  }
 }
 
 class PostModel {

@@ -10,3 +10,6 @@ class SuccussfulRemoveFromFavState extends ProductsStates {}
 class SuccessfulAddFavoriteState extends ProductsStates {}
 class ProductSuccessfullProductAddedState extends ProductsStates {}
 class ProductSuccessfulGetCartProductsState extends ProductsStates {}
+class ProductsSuccessfullAddToCartState extends ProductsStates {}
+class ProductsSuccessfulGetCartProductsState extends ProductsStates {}
+class ProductsSuccessfulGetEmptyCartProductsState extends ProductsStates {}
